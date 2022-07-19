@@ -5,6 +5,9 @@ pipeline {
     {
        maven 'maven'
     }
+    environment {
+         PATH = "/opt/apache-maven-3.8.5/bin:$PATH"
+}
  stages {
       stage('checkout') {
            steps {
