@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+ 
+   tools
+    {
+       maven 'maven'
+    }
+ stages {
+      stage('checkout') {
+           steps {
+                   git credentialsId: '78d45fbd-d8e5-4130-940c-3a43bb238159', url: 'https://github.com/Babavalli2021/SPC-Docker-Project.git'             
+          }
+        }
+  stage('Execute Maven') {
+           steps {
+             
+                sh 'mvn package'             
+          }
+        }
+stage('Docker Build and Tag') {
+           steps {
+              
+                sh 'docker build -t samplewebapp:latest .' 
+                sh 'docker tag samplewebapp babavalli/dockerproject:latest'
+                
+               
+          }
+        }
+     
+  stage('Publish image to Docker Hub') {
+          
+            steps {
+        withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+          sh  'docker push babavalli/dockerproject:latest'
+        
+        }
+                  
+          }
+        }
+     
+      stage('Run Docker container on Jenkins Agent') {
+             
+            steps 
+   {
+                sh "docker run -p 80:80 babavalli/dockerproject"
+                 
+ 
+            }
+        }
+ stage('Run Docker container on remote hosts') {
+             
+            steps {
+                
+                // Local system need to run
+                
+                sh "docker run -d -p 192.168.29.128:8003:8080 babavalli/dockerproject"
+                
+               
+ 
+            }
+        }
+    }
+ }
