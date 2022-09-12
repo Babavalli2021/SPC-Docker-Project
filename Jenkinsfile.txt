@@ -3,11 +3,9 @@ pipeline {
  
    tools
     {
-       maven 'maven'
+      maven 'Maven'
     }
-    environment {
-         PATH = "/opt/apache-maven-3.8.5/bin:$PATH"
-}
+    
  stages {
       stage('checkout') {
            steps {
@@ -23,8 +21,8 @@ pipeline {
 stage('Docker Build and Tag') {
            steps {
               
-                sh 'docker build -t samplewebapp:latest .' 
-                sh 'docker tag samplewebapp babavalli/dockerproject:latest'
+                sh 'docker build -t dockerproject:latest .' 
+                sh 'docker tag dockerproject babavalli/dockerproject:latest'
                 
                
           }
@@ -33,7 +31,7 @@ stage('Docker Build and Tag') {
   stage('Publish image to Docker Hub') {
           
             steps {
-        withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+        withDockerRegistry([ credentialsId: "GIT_HUB", url: "" ]) {
           sh  'docker push babavalli/dockerproject:latest'
         
         }
